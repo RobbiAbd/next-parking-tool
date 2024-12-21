@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ParkingLot {
+  id             Int       @id @default(autoincrement())
+  total_spaces   Int       // Kapasitas total tempat parkir
+  occupied_spaces Int      // Jumlah kendaraan yang sedang parkir
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @default(now()) @updatedAt
+}
+
+model ParkingCard {
+  id             Int           @id @default(autoincrement())
+  license_plate  String?       // Nomor kendaraan
+  vehicle_type   String?       // Jenis kendaraan
+  barcode        String        // Barcode unik
+  entry_time     DateTime      // Waktu masuk parkir
+  exit_time      DateTime?     // Waktu keluar parkir
+  fee_paid       Float?        // Biaya yang telah dibayar
+  created_at     DateTime      @default(now())
+
+  // Relasi ke Transaction
+  Transaction    Transaction[] @relation("ParkingCardToTransaction")
+}
+
+model Transaction {
+  id              Int          @id @default(autoincrement())
+  parking_card_id Int          // Relasi ke kartu parkir
+  ParkingCard     ParkingCard  @relation("ParkingCardToTransaction", fields: [parking_card_id], references: [id])
+  amount_paid     Float        // Jumlah uang yang dibayar
+  change_given    Float        // Kembalian yang diberikan
+  transaction_time DateTime    @default(now()) // Waktu transaksi
+}
