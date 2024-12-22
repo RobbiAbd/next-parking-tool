@@ -30,22 +30,13 @@ export default async function handler(
         data: vehicle,
       });
 
-      // Menambahkan record transaksi
-      const transaction = await prisma.transaction.create({
-        data: {
-          parking_card_id: parkingCard.id,
-          amount_paid: 0, // Jumlah pembayaran, bisa disesuaikan
-          change_given: 0, // Kembalian, bisa dihitung lebih lanjut
-        },
-      });
-
       // Memperbarui data ParkingLot (menambahkan occupied space)
       const updatedParkingLot = await prisma.parkingLot.update({
         where: { id: parkingLot.id },
         data: { occupied_spaces: parkingLot.occupied_spaces + 1 },
       });
 
-      res.status(200).json({ parkingCard, transaction, updatedParkingLot });
+      res.status(200).json({ parkingCard, updatedParkingLot });
     } catch (error) {
       res.status(500).json({ error: "Failed to process parking entry" });
     }
