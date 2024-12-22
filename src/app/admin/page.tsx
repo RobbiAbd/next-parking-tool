@@ -2,16 +2,35 @@
 
 import { useEffect, useState } from "react";
 import Table from "@/components/modules/Tables";
+import { useHelpStore } from "@/@stores/helpStore";
+import { generateBarcodeAndPDF } from "@/@utils/helpers";
+import Button from "@/components/elements/Button";
 
 export default function AdminPage() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [barcodeToGenerate, setBarcodeToGenerate] = useState<string | null>(
+    null
+  ); // State to hold the barcode to generate
+  const { helpRequested, setHelpRequested } = useHelpStore();
 
   const columns = [
     { key: "license_plate", label: "License Plate" },
     { key: "vehicle_type", label: "Vehicle Type" },
-    { key: "barcode", label: "Barcode" },
+    {
+      key: "barcode",
+      label: "Barcode",
+      render: (value: string) => (
+        <Button
+          label={value}
+          variant="primary"
+          size="md"
+          // Use an arrow function to pass the barcode value to the handler
+          onClick={() => handleGenerateBarcode(value)}
+        />
+      ),
+    },    
     {
       key: "entry_time",
       label: "Entry Time",
@@ -33,7 +52,6 @@ export default function AdminPage() {
       key: "Transaction",
       label: "Transactions",
       render: (transactions: any[]) => {
-        console.log("Transactions Data:", transactions);
         return transactions && transactions.length > 0
           ? transactions
               .map(
@@ -43,7 +61,7 @@ export default function AdminPage() {
               .join("; ")
           : "No Transactions";
       },
-    }
+    },
   ];
 
   useEffect(() => {
@@ -51,15 +69,12 @@ export default function AdminPage() {
       try {
         const response = await fetch("/api/parkingcard/transactions");
         const result = await response.json();
-        console.log("API Response:", result); // Debug API response structure
         if (Array.isArray(result)) {
           setData(result);
         } else {
-          console.error("API did not return an array");
           setError("Failed to load data");
         }
       } catch (err) {
-        console.error("Fetch error:", err);
         setError("Failed to load data");
       } finally {
         setLoading(false);
@@ -68,6 +83,18 @@ export default function AdminPage() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (helpRequested) {
+      alert("Someone needs help!"); // Trigger the alert when help is requested
+    }
+  }, [helpRequested, setHelpRequested]); // Effect runs when helpRequested changes
+
+  // Handle the click on the barcode to generate the barcode image
+  const handleGenerateBarcode = (barcode: string) => {
+    setBarcodeToGenerate(barcode);
+    generateBarcodeAndPDF(barcode); // Call function to generate and show/download PDF
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;

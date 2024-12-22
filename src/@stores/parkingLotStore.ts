@@ -1,3 +1,4 @@
+import { ParkingCard } from "@prisma/client";
 import { create } from "zustand";
 
 interface ParkingLot {
@@ -10,13 +11,15 @@ interface ParkingLot {
 
 interface ParkingLotStore {
   parkingLot: ParkingLot | null;
+  parkingCard: ParkingCard | null;
   fetchParkingLot: () => Promise<void>;
   enterParking: () => Promise<void>;
-  error: string | null; // Untuk menampilkan pesan error
+  error: string | null; // Untuk menampilkan pesan error,
 }
 
 export const useParkingLotStore = create<ParkingLotStore>((set) => ({
   parkingLot: null,
+  parkingCard: null,
   error: null,
   fetchParkingLot: async () => {
     try {
@@ -34,7 +37,7 @@ export const useParkingLotStore = create<ParkingLotStore>((set) => ({
       });
       const data = await response.json();
       if (response.ok) {
-        set({ parkingLot: data.updatedParkingLot, error: null }); // Update parkingLot setelah kendaraan masuk
+        set({ parkingLot: data.updatedParkingLot, parkingCard: data.parkingCard, error: null }); // Update parkingLot setelah kendaraan masuk
         console.log("Parking entry successful", data);
       } else {
         set({ error: data.error }); // Menangani error jika parkir penuh

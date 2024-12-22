@@ -1,12 +1,20 @@
 "use client";
 
+import { useHelpStore } from "@/@stores/helpStore";
 import { useParkingLotStore } from "@/@stores/parkingLotStore";
 import Button from "@/components/elements/Button";
 import { useEffect } from "react";
+import { generateBarcodeAndPDF } from "@/@utils/helpers";
 
 export default function Page() {
-  const { parkingLot, fetchParkingLot, enterParking, error } =
+  const { parkingLot, fetchParkingLot, enterParking, parkingCard, error } =
     useParkingLotStore();
+
+  const { setHelpRequested } = useHelpStore(); // Access the Zustand store
+
+  const handleClickHelp = () => {
+    setHelpRequested(true); // Set the helpRequested state to true when button is clicked
+  };
 
   useEffect(() => {
     fetchParkingLot();
@@ -17,7 +25,10 @@ export default function Page() {
   }
 
   const handleEnterParking = async () => {
-    await enterParking(); // Panggil fungsi untuk memasukkan kendaraan ke parkir
+    await enterParking(); // Call enterParking to enter the parking lot
+    if (parkingCard?.barcode) {
+      generateBarcodeAndPDF(parkingCard.barcode); // If barcode is available, generate the PDF
+    }
   };
 
   const isParkingFull = parkingLot.occupied_spaces >= parkingLot.total_spaces;
@@ -30,7 +41,12 @@ export default function Page() {
       <h1 className="text-center">Ambil Kartu</h1>
       <div className="flex justify-center gap-x-4">
         <div>
-          <Button label="Tombol Bantuan" variant="danger" size="md" />
+          <Button
+            label="Tombol Bantuan"
+            variant="danger"
+            size="md"
+            onClick={handleClickHelp}
+          />
         </div>
         {!isParkingFull && (
           <div>
