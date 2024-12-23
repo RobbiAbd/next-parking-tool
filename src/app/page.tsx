@@ -20,15 +20,20 @@ export default function Page() {
     fetchParkingLot();
   }, [fetchParkingLot]);
 
+  // Call generateBarcodeAndPDF whenever parkingCard.barcode is updated
+  useEffect(() => {
+    if (parkingCard?.barcode) {
+      generateBarcodeAndPDF(parkingCard.barcode); // Generate PDF when the barcode becomes available
+    }
+  }, [parkingCard?.barcode]);
+
   if (!parkingLot) {
     return <div>Loading...</div>;
   }
 
   const handleEnterParking = async () => {
     await enterParking(); // Call enterParking to enter the parking lot
-    if (parkingCard?.barcode) {
-      generateBarcodeAndPDF(parkingCard.barcode); // If barcode is available, generate the PDF
-    }
+    // No need to call generateBarcodeAndPDF here; it will be triggered by the useEffect above
   };
 
   const isParkingFull = parkingLot.occupied_spaces >= parkingLot.total_spaces;

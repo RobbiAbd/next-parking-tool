@@ -54,13 +54,11 @@ export default function ExitPage() {
 
       // Check if exit_time is already filled
       if (data.fee_paid !== null && data.fee_paid !== undefined) {
-        console.log(data)
         setIsPaymentDone(true); // Payment already completed
         setError(null); // Clear any previous errors
         setTimeout(() => {
           window.location.reload(); // Reload the page after 3 seconds
         }, 3000);
-        
         return;
       }
 
@@ -94,7 +92,7 @@ export default function ExitPage() {
           barcode: scannedBarcode,
           amount_paid: amountPaid,
           change_given: changeGiven,
-          fee_paid: amountPaid
+          fee_paid: amountPaid,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +112,6 @@ export default function ExitPage() {
       setTimeout(() => {
         window.location.reload(); // Reload the page after 3 seconds
       }, 3000);
-
     } catch (err) {
       console.error("Failed to process payment:", err);
       setError("Failed to process payment");
@@ -153,6 +150,13 @@ export default function ExitPage() {
     }
   }, [isScanning]); // Only re-run the scanning setup when isScanning changes
 
+  useEffect(() => {
+    if (amountPaid !== null && paymentAmount !== null) {
+      const change = amountPaid - paymentAmount;
+      setChangeGiven(change > 0 ? change : 0); // Ensure the change is not negative
+    }
+  }, [amountPaid, paymentAmount]);
+
   const handleManualSubmit = () => {
     // Manually entered barcode
     if (scannedBarcode) {
@@ -170,7 +174,6 @@ export default function ExitPage() {
     <div className="p-4">
       <h1 className="text-center">Exit Parking</h1>
 
-      {/* Webcam for scanning barcodes */}
       {isScanning && (
         <div className="flex justify-center mb-4">
           <Webcam
@@ -185,7 +188,6 @@ export default function ExitPage() {
         </div>
       )}
 
-      {/* Buttons to select scanning method */}
       {!isScanning && !isPaymentDone && (
         <div className="text-center mb-4">
           <Button
@@ -197,14 +199,12 @@ export default function ExitPage() {
         </div>
       )}
 
-      {/* Show message if payment is already done */}
       {isPaymentDone && (
         <div className="text-center text-green-500 mt-4">
           <p>Payment already paid! You can exit the parking.</p>
         </div>
       )}
 
-      {/* Manually input license plate if needed */}
       {!isScanning && !isPaymentDone && (
         <div className="text-center mb-4">
           <input
@@ -212,15 +212,14 @@ export default function ExitPage() {
             value={scannedBarcode}
             onChange={(e) => {
               setScannedBarcode(e.target.value);
-              setIsManualEntry(true); // Allow submit button if manually entered
+              setIsManualEntry(true);
             }}
-            placeholder="Or enter License Plate"
+            placeholder="Or enter barcode number"
             className="p-2 border rounded"
           />
         </div>
       )}
 
-      {/* Show submit button if the barcode is entered manually */}
       {isManualEntry && !isPaymentDone && (
         <div className="text-center mb-4">
           <Button
@@ -232,10 +231,9 @@ export default function ExitPage() {
         </div>
       )}
 
-      {/* Show parking fee */}
       {paymentAmount !== null && !isPaymentDone && (
         <div className="mt-4">
-          <p>Parking Fee: Rp {paymentAmount.toLocaleString()}</p>
+          <p>Biaya Parkir: Rp {paymentAmount.toLocaleString()}</p>
           <input
             type="number"
             placeholder="Amount Paid"
@@ -245,21 +243,12 @@ export default function ExitPage() {
         </div>
       )}
 
-      {/* Input for Change Given */}
-      {amountPaid && paymentAmount && !isPaymentDone && (
+      {amountPaid !== null && paymentAmount !== null && (
         <div className="mt-4">
-          <p>Change to be Given: </p>
-          <input
-            type="number"
-            placeholder="Enter Change Given"
-            className="p-2 border rounded mt-2"
-            value={changeGiven ?? ""}
-            onChange={(e) => setChangeGiven(parseFloat(e.target.value))}
-          />
+          <p>Kembalian: Rp {changeGiven !== null ? changeGiven.toLocaleString() : "0"}</p>
         </div>
       )}
 
-      {/* Payment button */}
       {paymentAmount !== null && changeGiven !== null && !isPaymentDone && (
         <div className="mt-4 text-center">
           <Button
@@ -271,19 +260,10 @@ export default function ExitPage() {
         </div>
       )}
 
-      {/* Display error if any */}
       {error && <div className="text-red-500 text-center mt-4">{error}</div>}
 
-      {/* Show success message */}
       {successMessage && (
         <div className="text-green-500 text-center mt-4">{successMessage}</div>
-      )}
-
-      {/* Show change given */}
-      {changeGiven !== null && !isPaymentDone && (
-        <div className="mt-4 text-center">
-          <p>Change Given: Rp {changeGiven.toLocaleString()}</p>
-        </div>
       )}
     </div>
   );

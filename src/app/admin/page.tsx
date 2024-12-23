@@ -101,7 +101,7 @@ export default function AdminPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Admin - Parking Cards</h1>
+      <h1 className="text-2xl font-bold mb-4">Admin - List Parkir</h1>
       <Table columns={columns} data={data} />
     </div>
   );
