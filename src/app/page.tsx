@@ -3,16 +3,25 @@
 import { useHelpStore } from "@/@stores/helpStore";
 import { useParkingLotStore } from "@/@stores/parkingLotStore";
 import Button from "@/components/elements/Button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { generateBarcodeAndPDF } from "@/@utils/helpers";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 export default function Page() {
   const { parkingLot, fetchParkingLot, enterParking, parkingCard, error } =
     useParkingLotStore();
+  const swalHelp = withReactContent(Swal);
 
   const { setHelpRequested } = useHelpStore(); // Access the Zustand store
 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Manage button disabled state
+
   const handleClickHelp = () => {
+    swalHelp.fire({
+      title: "Information",
+      text: "Petugas akan segera membantu",
+    });
     setHelpRequested(true); // Set the helpRequested state to true when button is clicked
   };
 
@@ -32,8 +41,11 @@ export default function Page() {
   }
 
   const handleEnterParking = async () => {
+    setIsButtonDisabled(true); // Disable the button immediately
     await enterParking(); // Call enterParking to enter the parking lot
-    // No need to call generateBarcodeAndPDF here; it will be triggered by the useEffect above
+    setTimeout(() => {
+      setIsButtonDisabled(false); // Re-enable the button after 5 seconds
+    }, 5000);
   };
 
   const isParkingFull = parkingLot.occupied_spaces >= parkingLot.total_spaces;
@@ -60,6 +72,7 @@ export default function Page() {
               variant="success"
               size="md"
               onClick={handleEnterParking}
+              disabled={isButtonDisabled} // Disable the button if isButtonDisabled is true
             />
           </div>
         )}
