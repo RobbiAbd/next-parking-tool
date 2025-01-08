@@ -40,9 +40,16 @@ export default function Page() {
     return <div>Loading...</div>;
   }
 
+  const playSound = () => {
+    const audio = new Audio("/audio/entry.mp3"); // Initialize audio
+    audio.play(); // Play the sound
+  };
+
   const handleEnterParking = async () => {
     setIsButtonDisabled(true); // Disable the button immediately
     await enterParking(); // Call enterParking to enter the parking lot
+    playSound()
+
     setTimeout(() => {
       setIsButtonDisabled(false); // Re-enable the button after 5 seconds
     }, 5000);

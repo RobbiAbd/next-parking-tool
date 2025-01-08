@@ -19,6 +19,11 @@ export default function ExitPage() {
   const webcamRef = useRef<any>(null);
   const scannerRef = useRef<BrowserMultiFormatReader | null>(null);
 
+  const playSound = () => {
+    const audio = new Audio("/audio/exit.mp3"); // Initialize audio
+    audio.play(); // Play the sound
+  };
+
   // Barcode scanner setup
   const handleScanBarcode = (result: string) => {
     if (result) {
@@ -35,6 +40,7 @@ export default function ExitPage() {
 
       // Update parking transaction
       updateParkingTransaction();
+      playSound()
     }
   };
 
