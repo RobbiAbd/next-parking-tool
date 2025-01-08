@@ -178,7 +178,7 @@ export default function ExitPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-center">Exit Parking</h1>
+      <h1 className="text-center font-bold">Exit Parking</h1>
 
       {isScanning && (
         <div className="flex justify-center mb-4">
@@ -207,7 +207,7 @@ export default function ExitPage() {
 
       {isPaymentDone && (
         <div className="text-center text-green-500 mt-4">
-          <p>Payment already paid! You can exit the parking.</p>
+          <p className="font-bold">Payment already paid! You can exit the parking.</p>
         </div>
       )}
 
@@ -238,8 +238,8 @@ export default function ExitPage() {
       )}
 
       {paymentAmount !== null && !isPaymentDone && (
-        <div className="mt-4">
-          <p>Biaya Parkir: Rp {paymentAmount.toLocaleString()}</p>
+        <div className="mt-4 text-center">
+          <p className="font-bold text-white">Biaya Parkir: Rp {paymentAmount.toLocaleString()}</p>
           <input
             type="number"
             placeholder="Amount Paid"
@@ -250,8 +250,8 @@ export default function ExitPage() {
       )}
 
       {amountPaid !== null && paymentAmount !== null && (
-        <div className="mt-4">
-          <p>Kembalian: Rp {changeGiven !== null ? changeGiven.toLocaleString() : "0"}</p>
+        <div className="mt-4 text-center">
+          <p className="font-bold text-white">Kembalian: Rp {changeGiven !== null ? changeGiven.toLocaleString() : "0"}</p>
         </div>
       )}
 
@@ -269,7 +269,7 @@ export default function ExitPage() {
       {error && <div className="text-red-500 text-center mt-4">{error}</div>}
 
       {successMessage && (
-        <div className="text-green-500 text-center mt-4">{successMessage}</div>
+        <div className="text-green-500 text-center mt-4 font-bold">{successMessage}</div>
       )}
     </div>
   );

@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* styles/globals.css */
+body {
+    background-color: #f0f0f0; /* Fallback color */
+    background-image: url("/image/bg.jpeg"); /* Path to your background image */
+    background-size: cover; /* Scale the image to cover the entire viewport */
+    background-repeat: no-repeat; /* Prevent repeating */
+    background-position: center; /* Center the image */
+    margin: 0; /* Remove default margin */
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+    overflow: hidden; /* Optional: Hide scrollbars if content overflows */
+}  

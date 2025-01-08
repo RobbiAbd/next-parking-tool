@@ -59,10 +59,10 @@ export default function Page() {
 
   return (
     <div className="p-4">
-      <h3 className="text-center">
+      <h3 className="text-center font-bold">
         Slot Parkir: {parkingLot.occupied_spaces}/{parkingLot.total_spaces}
       </h3>
-      <h1 className="text-center">Ambil Kartu</h1>
+      <h1 className="text-center font-bold">Ambil Kartu</h1>
       <div className="flex justify-center gap-x-4">
         <div>
           <Button
