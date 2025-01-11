@@ -19,10 +19,10 @@ export default function ExitPage() {
   const webcamRef = useRef<any>(null);
   const scannerRef = useRef<BrowserMultiFormatReader | null>(null);
 
-  const playSound = () => {
-    const audio = new Audio("/audio/exit.mp3"); // Initialize audio
-    audio.play(); // Play the sound
-  };
+  // const playSound = () => {
+  //   const audio = new Audio("/audio/exit.mp3"); // Initialize audio
+  //   audio.play(); // Play the sound
+  // };
 
   // Barcode scanner setup
   const handleScanBarcode = (result: string) => {
@@ -40,7 +40,7 @@ export default function ExitPage() {
 
       // Update parking transaction
       updateParkingTransaction();
-      playSound()
+      // playSound()
     }
   };
 
@@ -69,7 +69,12 @@ export default function ExitPage() {
       }
 
       const parkingDuration =
-        (exitTime ? exitTime.getTime() - entryTime.getTime() : new Date().getTime()) / 1000 / 60 / 60; // Duration in hours
+        (exitTime
+          ? exitTime.getTime() - entryTime.getTime()
+          : new Date().getTime()) /
+        1000 /
+        60 /
+        60; // Duration in hours
 
       // Calculate the parking fee
       let fee = 0;
@@ -207,7 +212,9 @@ export default function ExitPage() {
 
       {isPaymentDone && (
         <div className="text-center text-green-500 mt-4">
-          <p className="font-bold">Payment already paid! You can exit the parking.</p>
+          <p className="font-bold">
+            Payment already paid! You can exit the parking.
+          </p>
         </div>
       )}
 
@@ -239,7 +246,9 @@ export default function ExitPage() {
 
       {paymentAmount !== null && !isPaymentDone && (
         <div className="mt-4 text-center">
-          <p className="font-bold text-white">Biaya Parkir: Rp {paymentAmount.toLocaleString()}</p>
+          <p className="font-bold text-white">
+            Biaya Parkir: Rp {paymentAmount.toLocaleString()}
+          </p>
           <input
             type="number"
             placeholder="Amount Paid"
@@ -251,7 +260,10 @@ export default function ExitPage() {
 
       {amountPaid !== null && paymentAmount !== null && (
         <div className="mt-4 text-center">
-          <p className="font-bold text-white">Kembalian: Rp {changeGiven !== null ? changeGiven.toLocaleString() : "0"}</p>
+          <p className="font-bold text-white">
+            Kembalian: Rp{" "}
+            {changeGiven !== null ? changeGiven.toLocaleString() : "0"}
+          </p>
         </div>
       )}
 
@@ -269,7 +281,9 @@ export default function ExitPage() {
       {error && <div className="text-red-500 text-center mt-4">{error}</div>}
 
       {successMessage && (
-        <div className="text-green-500 text-center mt-4 font-bold">{successMessage}</div>
+        <div className="text-green-500 text-center mt-4 font-bold">
+          {successMessage}
+        </div>
       )}
     </div>
   );
